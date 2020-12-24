@@ -29,6 +29,48 @@ public class Job {
     }
 
     @Override
+    public String toString() {
+        String[] labels = {"ID: ", "Name: ", "Employer: ", "Location: ", "Position Type: ", "Core Competency: "};
+        Field[] fields = Job.class.getDeclaredFields();
+        String unavailable = "Data not available";
+        String message = "\n";
+        int index = 0;
+
+        for (Field f : fields) {
+            if (f.getName() == "nextId") {
+
+            } else {
+                try {
+
+                    if (f.get(this) instanceof JobField) {
+
+                        if (((JobField) f.get(this)).getValue() == "") {
+                            // print unavailable
+                            message = message + labels[index] + unavailable + "\n";
+                        } else {
+                            // else, print job field value
+                            message = message + labels[index] + f.get(this) + "\n";
+                        }
+                    } else if (f.get(this) == null || f.get(this) == "") {
+                        // contains only id
+
+                        message = "OOPS! This job does not seem to exist." ;
+                    } else {
+                        // else, print non-job-field value (eg. name value)
+                        message = message + labels[index] + f.get(this) + "\n";
+                    }
+                    index++;
+                } catch (Exception e) {
+                    message = message + labels[index] + unavailable + "\n";
+                    index++;
+                }
+            }
+        }
+
+        return message;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Job)) return false;

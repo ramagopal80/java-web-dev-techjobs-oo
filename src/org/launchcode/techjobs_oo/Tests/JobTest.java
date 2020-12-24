@@ -4,6 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.launchcode.techjobs_oo.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -55,6 +59,60 @@ public void  testSettingJobId (){
         // id values are not the same
         assertFalse(Job1.equals(Job2));
     }
+    @Test
+    public void testToStringLines() {
+        Job testJob = new Job("Product tester", new Employer("ACME"), new Location("Desert"), new PositionType("Quality control"), new CoreCompetency("Persistence"));;
+        int lastIndex = (testJob.toString().length() - 1);
 
+        assertTrue(testJob.toString().charAt(0) == '\n');
+        assertTrue(testJob.toString().charAt(lastIndex) == '\n');
+    }
+
+    @Test
+    public void testToStringPrintLabels() {
+        Job testJob = new Job("Product tester", new Employer("ACME"), new Location("Desert"), new PositionType("Quality control"), new CoreCompetency("Persistence"));
+
+        String[] lines = testJob.toString().trim().split("\n");
+
+        System.out.println(testJob.toString());
+
+        assertTrue(lines.length == 6);
+
+        assertTrue(lines[0].startsWith("ID:"));
+        assertTrue(lines[1].startsWith("Name:"));
+        assertTrue(lines[2].startsWith("Employer:"));
+        assertTrue(lines[3].startsWith("Location:"));
+        assertTrue(lines[4].startsWith("Position Type:"));
+        assertTrue(lines[5].startsWith("Core Competency:"));
+
+        assertTrue(lines[0].endsWith(Integer.toString(testJob.getId())));
+        assertTrue(lines[1].endsWith(testJob.getName()));
+        assertTrue(lines[2].endsWith(testJob.getEmployer().toString()));
+        assertTrue(lines[3].endsWith(testJob.getLocation().toString()));
+        assertTrue(lines[4].endsWith(testJob.getPositionType().toString()));
+        assertTrue(lines[5].endsWith(testJob.getCoreCompetency().toString()));
+    }
+
+    @Test
+    public void testToStringDataUnavailable() {
+        Job testJob = new Job();
+
+        String[] lines = testJob.toString().trim().split("\n");
+
+        System.out.println(testJob.toString());
+
+        // removing the ID field, which will always have data
+        List<String> list = new ArrayList<String>(Arrays.asList(lines));
+        list.remove(0);
+        lines = list.toArray(new String[0]);
+
+        String unavailable = "Data not available";
+
+        for (String line : lines) {
+            assertTrue(line.endsWith(unavailable));
+        }
+    }
 }
+
+
 
